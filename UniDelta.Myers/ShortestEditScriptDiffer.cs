@@ -75,13 +75,10 @@ public class ShortestEditScriptDiffer<T>
 
     internal MiddleSnake FindMiddleSnake(in ListAccessor<T> source, in ListAccessor<T> target)
     {
-        int sourceCount = source.Count;
-        int targetCount = target.Count;
-
-        int lenghtSum = sourceCount + targetCount;
+        int lenghtSum = source.Count + target.Count;
         int halfDMax = DivCeil(lenghtSum, 2);
 
-        int delta = sourceCount - targetCount;
+        int delta = source.Count - target.Count;
         bool overlapCheckOnForwardPass = delta % 2 != 0;
 
         DPathFinder<T>.Iterator forwardIterator = forwardFinder.Begin(halfDMax, source, target);
@@ -97,13 +94,13 @@ public class ShortestEditScriptDiffer<T>
         backwardIterator.StepD();
         backwardIterator.StepK();
 
-        if (CheckOverlap(forwardIterator, backwardIterator, 0, delta, sourceCount))
+        if (CheckOverlap(forwardIterator, backwardIterator, 0, delta, source.Count))
         {
             return new MiddleSnake(
                 0,
                 source.RealIndex(0), target.RealIndex(0),
                 source.RealIndex(source.Count), target.RealIndex(target.Count),
-                sourceCount, sourceCount
+                source.Count, source.Count
             );
         }
 
@@ -115,7 +112,7 @@ public class ShortestEditScriptDiffer<T>
             forwardIterator.StepD();
             while (forwardIterator.StepK())
             {
-                if (overlapCheckOnForwardPass && CheckOverlap(forwardIterator, backwardIterator, d - 1, delta, sourceCount))
+                if (overlapCheckOnForwardPass && CheckOverlap(forwardIterator, backwardIterator, d - 1, delta, source.Count))
                 {
                     return new MiddleSnake(
                         2 * d - 1,
@@ -131,7 +128,7 @@ public class ShortestEditScriptDiffer<T>
             backwardIterator.StepD();
             while (backwardIterator.StepK())
             {
-                if (!overlapCheckOnForwardPass && CheckOverlap(backwardIterator, forwardIterator, d, delta, sourceCount))
+                if (!overlapCheckOnForwardPass && CheckOverlap(backwardIterator, forwardIterator, d, delta, source.Count))
                 {
                     return new MiddleSnake(
                         2 * d,
