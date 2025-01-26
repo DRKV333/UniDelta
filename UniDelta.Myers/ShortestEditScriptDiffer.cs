@@ -94,7 +94,9 @@ public class ShortestEditScriptDiffer<T>
         backwardIterator.StepD();
         backwardIterator.StepK();
 
-        if (CheckOverlap(forwardIterator, backwardIterator, 0, delta, source.Count))
+        if (source.Count == target.Count && 
+            source.Count == forwardIterator.X &&
+            source.Count == backwardIterator.X)
         {
             return new MiddleSnake(
                 0,
