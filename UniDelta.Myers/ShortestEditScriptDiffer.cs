@@ -149,8 +149,7 @@ public class ShortestEditScriptDiffer<T>
 
     private static bool CheckOverlap(in DPathFinder<T>.Iterator iterator, in DPathFinder<T>.Iterator otherIterator, int d, int delta, int sourceCount)
     {
-        int k = iterator.K;
-        int otherK = -(k - delta);
+        int otherK = -(iterator.K - delta);
 
         if (otherK >= -d && otherK <= d)
         {
