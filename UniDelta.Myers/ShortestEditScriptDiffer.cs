@@ -17,8 +17,6 @@ public class ShortestEditScriptDiffer<T>
         int EndFirstSnake
     );
 
-    private bool running = false;
-
     private readonly DPathFinder<T> forwardFinder;
     private readonly DPathFinder<T> backwardFinder;
 
@@ -37,40 +35,25 @@ public class ShortestEditScriptDiffer<T>
         if (target.Count == 0)
             return source.Count;
 
-        CheckRunning();
-        try
+        if (max < 0)
+            max = source.Count + target.Count;
+
+        DPathFinder<T>.Iterator iterator = forwardFinder.Begin(
+            max,
+            new ListAccessor<T>(source),
+            new ListAccessor<T>(target)
+        );
+
+        while (iterator.StepD())
         {
-            if (max < 0)
-                max = source.Count + target.Count;
-
-            DPathFinder<T>.Iterator iterator = forwardFinder.Begin(
-                max,
-                new ListAccessor<T>(source),
-                new ListAccessor<T>(target)
-            );
-
-            while (iterator.StepD())
+            while (iterator.StepK())
             {
-                while (iterator.StepK())
-                {
-                    if (iterator.X >= source.Count && iterator.Y >= target.Count)
-                        return iterator.D;
-                }
+                if (iterator.X >= source.Count && iterator.Y >= target.Count)
+                    return iterator.D;
             }
-
-            return -1;
         }
-        finally
-        {
-            running = false;
-        }
-    }
 
-    private void CheckRunning()
-    {
-        if (running)
-            throw new InvalidOperationException("Diffing is already in progress");
-        running = true;
+        return -1;
     }
 
     internal MiddleSnake FindMiddleSnake(in ListAccessor<T> source, in ListAccessor<T> target)
