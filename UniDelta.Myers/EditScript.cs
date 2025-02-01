@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace UniDelta.Myers;
 
@@ -28,9 +27,6 @@ public record class EditScript<T>(
         int i = 0;
         foreach (T item in source)
         {
-            if (i == 841)
-                Debugger.Break();
-
             while (insertIndex < Inserts.Count && Inserts[insertIndex].Index == i)
             {
                 foreach (T insertItem in Inserts[insertIndex].Values)
